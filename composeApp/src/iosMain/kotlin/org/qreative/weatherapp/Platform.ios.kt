@@ -1,4 +1,4 @@
-package org.deep.weatherapp
+package org.qreative.weatherapp
 
 import platform.UIKit.UIDevice
 

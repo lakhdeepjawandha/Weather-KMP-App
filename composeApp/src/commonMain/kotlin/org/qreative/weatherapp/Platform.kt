@@ -1,4 +1,4 @@
-package org.deep.weatherapp
+package org.qreative.weatherapp
 
 interface Platform {
     val name: String

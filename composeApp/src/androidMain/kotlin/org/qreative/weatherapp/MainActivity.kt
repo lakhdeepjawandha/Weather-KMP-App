@@ -1,4 +1,4 @@
-package org.deep.weatherapp
+package org.qreative.weatherapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

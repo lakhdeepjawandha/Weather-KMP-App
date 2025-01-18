@@ -28,10 +28,7 @@ kotlin {
         }
     }
     
-    jvm("desktop")
-    
     sourceSets {
-        val desktopMain by getting
         
         androidMain.dependencies {
             implementation(compose.preview)
@@ -47,19 +44,15 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-        }
     }
 }
 
 android {
-    namespace = "org.deep.weatherapp"
+    namespace = "org.qreative.weatherapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.deep.weatherapp"
+        applicationId = "org.qreative.weatherapp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -85,14 +78,3 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
-compose.desktop {
-    application {
-        mainClass = "org.deep.weatherapp.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.deep.weatherapp"
-            packageVersion = "1.0.0"
-        }
-    }
-}

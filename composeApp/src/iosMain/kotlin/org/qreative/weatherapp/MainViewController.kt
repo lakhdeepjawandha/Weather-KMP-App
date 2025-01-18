@@ -1,4 +1,4 @@
-package org.deep.weatherapp
+package org.qreative.weatherapp
 
 import androidx.compose.ui.window.ComposeUIViewController
 
