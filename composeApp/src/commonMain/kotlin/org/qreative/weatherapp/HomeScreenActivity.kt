@@ -1,3 +1,4 @@
+/*
 package org.qreative.weatherapp
 
 import android.os.Bundle
@@ -95,3 +96,4 @@ fun CityItem(cityName: String) {
         )
     }
 }
+*/
