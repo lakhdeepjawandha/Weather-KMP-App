@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.qreative.weatherapp.ui.home.HomeScreen
 
 import weatherapp.composeapp.generated.resources.Res
 import weatherapp.composeapp.generated.resources.compose_multiplatform
@@ -22,27 +23,9 @@ import weatherapp.composeapp.generated.resources.compose_multiplatform
 @Preview
 fun App(urlProvider: UrlProvider) {
 
-    print("urlProvider: ${urlProvider.getUrl()}")
+//    println("urlProvider: ${urlProvider.getUrl()}")
     MaterialTheme {
 
-        Text(text = "Test Lakhdeep");
-        val urlHandler = LocalUriHandler.current
-        var showContent by remember { mutableStateOf(false) }
-
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Compose: $greeting", modifier = Modifier.clickable {
-                        urlHandler.openUri(urlProvider.getUrl())
-                    })
-                }
-            }
-        }
-
+        HomeScreen()
     }
 }
