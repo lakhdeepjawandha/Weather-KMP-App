@@ -12,25 +12,25 @@ import org.qreative.weatherapp.data.repository.WeatherRepository
 class HomeScreenViewModel {
 
     val repository = WeatherRepository()
-    private val _state = MutableStateFlow<HomeScrenState>(HomeScrenState.Loading)
+    private val _state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val state = _state.asStateFlow()
 
     fun fetchWeather(city: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            _state.value = HomeScrenState.Loading
+            _state.value = HomeScreenState.Loading
             try {
                 val response = repository.fetchWeather(city)
-                _state.value = HomeScrenState.Success(response)
+                _state.value = HomeScreenState.Success(response)
             } catch (e: Exception) {
                 println(e.message)
-                _state.value = HomeScrenState.Error(e.message ?: "Something went wrong")
+                _state.value = HomeScreenState.Error(e.message ?: "Something went wrong")
             }
         }
     }
 }
 
-sealed class HomeScrenState {
-    object Loading : HomeScrenState()
-    data class Success(val weather: WeatherResponse) : HomeScrenState()
-    data class Error(val message: String) : HomeScrenState()
+sealed class HomeScreenState {
+    object Loading : HomeScreenState()
+    data class Success(val weather: WeatherResponse) : HomeScreenState()
+    data class Error(val message: String) : HomeScreenState()
 }

@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WeatherResponse(
     val base: String?,
-    val clouds: Clouds?,
+    val clouds: Clouds? = null,
     val cod: Int?,
-    val coord: Coord,
+    val coord: Coord? = null,
     val dt: Int?,
     val id: Int?,
     val main: Main?,
