@@ -22,10 +22,8 @@ import weatherapp.composeapp.generated.resources.compose_multiplatform
 @Composable
 @Preview
 fun App(urlProvider: UrlProvider) {
-
 //    println("urlProvider: ${urlProvider.getUrl()}")
     MaterialTheme {
-
         HomeScreen()
     }
 }
