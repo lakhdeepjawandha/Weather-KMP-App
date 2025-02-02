@@ -23,9 +23,12 @@ class HomeScreenViewModel {
                 _state.value = HomeScreenState.Success(response)
             } catch (e: Exception) {
                 println(e.message)
-                _state.value = HomeScreenState.Error(e.message ?: "Something went wrong")
             }
         }
+    }
+
+    fun kelvinToFahrenheit(kelvin: Double): Double {
+        return (kelvin - 273.15) * 9/5 + 32
     }
 }
 

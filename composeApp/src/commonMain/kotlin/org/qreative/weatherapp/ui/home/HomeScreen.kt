@@ -17,7 +17,12 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.Button
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -42,20 +47,39 @@ import org.jetbrains.compose.resources.painterResource
 fun HomeScreen() {
 
     val viewModel = remember { HomeScreenViewModel() }
+    var cityName by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         viewModel.fetchWeather("London")
     }
-    val state = viewModel.state.collectAsState()
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Search Bar
+        TextField(
+            value = cityName,
+            onValueChange = { cityName = it },
+            label = { Text("Enter city name") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+
+        // Search Button
+        Button(
+            onClick = { viewModel.fetchWeather(cityName) },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("Search")
+        }
+
+        val state = viewModel.state.collectAsState()
         when (state.value) {
             is HomeScreenState.Loading -> {
                 CircularProgressIndicator()
                 Text(text = "Loading...")
-
             }
 
             is HomeScreenState.Success -> {

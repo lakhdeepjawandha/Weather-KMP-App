@@ -27,7 +27,9 @@ class ApiService {
         val appID = "ff11592eb6c4d1ad522fa161d2aabdfc"
         val url = "$baseUrl$city&appid=$appID"
         println("Request URL: $url")
-        return httpClient.get(url).body()
+        val response = httpClient.get(url).body<WeatherResponse>()
+        println("API Response: $response")
+        return response
     }
 
 
