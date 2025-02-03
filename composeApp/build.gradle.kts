@@ -38,6 +38,8 @@ kotlin {
             implementation(compose.material3)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            // Add Google Play Services Location dependency
+            implementation(libs.play.services.location)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
