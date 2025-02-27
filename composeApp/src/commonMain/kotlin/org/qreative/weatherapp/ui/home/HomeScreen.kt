@@ -52,6 +52,7 @@ fun HomeScreen() {
     LaunchedEffect(Unit) {
         viewModel.fetchWeather("London")
     }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -148,7 +149,7 @@ fun HomeScreenContent(weather: WeatherResponse) {
                 )
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(
-                    text = weather.weather.getOrNull(0)?.description ?: "",
+                    text = weather.weather?.getOrNull(0)?.description ?: "",
                     style = MaterialTheme.typography.h6.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold

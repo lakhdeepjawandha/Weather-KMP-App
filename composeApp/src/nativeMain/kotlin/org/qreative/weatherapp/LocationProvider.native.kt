@@ -11,11 +11,14 @@ import platform.CoreLocation.kCLAuthorizationStatusDenied
 
 import platform.CoreLocation.CLLocationCoordinate2D
 
-actual class LocationProvider : CLLocationManagerDelegateProtocol {
+actual class LocationProvider : NSObject(), CLLocationManagerDelegateProtocol {
 
     private val locationManager = CLLocationManager()
+    private var callback: ((lat: Double, lon: Double) -> Unit)? = null
 
     actual fun getCurrentLocation(callback: (lat: Double, lon: Double) -> Unit) {
+        this.callback = callback
+        locationManager.delegate = this
         locationManager.setDelegate(this)
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -24,9 +27,17 @@ actual class LocationProvider : CLLocationManagerDelegateProtocol {
 
     override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
         val location = didUpdateLocations.firstOrNull() as? CLLocation
-        if (location != null) {
-            val coordinate = location.coordinate
-            callback(coordinate.latitude, coordinate.longitude)
+        location?.let {
+            callback?.invoke(it.coordinate.latitude, it.coordinate.longitude)
         }
+    }
+
+    override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
+        println("Failed to get location: ${didFailWithError.localizedDescription}")
+    }
+
+    // Required implementation of `NSObjectProtocol`
+    override fun `class`(): ObjCClass? {
+        return null
     }
 }

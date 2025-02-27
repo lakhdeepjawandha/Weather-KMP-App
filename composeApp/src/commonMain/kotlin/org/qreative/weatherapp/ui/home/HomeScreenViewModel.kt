@@ -20,8 +20,13 @@ class HomeScreenViewModel {
             _state.value = HomeScreenState.Loading
             try {
                 val response = repository.fetchWeather(city)
-                _state.value = HomeScreenState.Success(response)
+                if (response != null) {
+                    _state.value = HomeScreenState.Success(response)
+                } else {
+                    _state.value = HomeScreenState.Error("Failed to fetch weather data")
+                }
             } catch (e: Exception) {
+                _state.value = HomeScreenState.Error(e.message ?: "An unexpected error occurred")
                 println(e.message)
             }
         }

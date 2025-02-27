@@ -10,11 +10,11 @@ data class WeatherResponse(
     val dt: Int?,
     val id: Int?,
     val main: Main?,
-    val name: String,
+    val name: String?,
     val rain: Rain? = null,
-    val sys: Sys?,
+    val sys: Sys? = null,
     val timezone: Int?,
     val visibility: Int?,
-    val weather: List<Weather>,
+    val weather: List<Weather>?,
     val wind: Wind? = null
 )
