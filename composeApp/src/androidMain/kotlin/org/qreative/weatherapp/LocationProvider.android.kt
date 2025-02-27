@@ -9,11 +9,6 @@ import android.app.Activity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
-//actual class LocationProvider {
-//    actual fun getCurrentLocation(callback: (lat: Double, lon: Double) -> Unit) {
-//    }
-//}
-
 actual class LocationProvider(private val context: Context) {
 
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
