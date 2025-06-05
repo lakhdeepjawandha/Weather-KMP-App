@@ -14,8 +14,9 @@ import org.qreative.weatherapp.utils.logMessage
 
 class ApiService {
 
-    private val baseUrl = "https://api.openweathermap.org/data/2.5/weather?q="
-//    private val baseUrl = "https://api.openweathermap.org/data/2.5/weather?id="
+    private val baseUrl = "https://api.openweathermap.org/data/2.5/weather"
+    private val appID = "ff11592eb6c4d1ad522fa161d2aabdfc"
+    
     private val httpClient = HttpClient {
         install(ContentNegotiation) {
             json(Json {
@@ -28,9 +29,16 @@ class ApiService {
     }
 
     suspend fun getWeather(city: String): WeatherResponse? {
-        val appID = "ff11592eb6c4d1ad522fa161d2aabdfc"
-        val url = "$baseUrl$city&appid=$appID"
+        val url = "$baseUrl?q=$city&appid=$appID"
+        return fetchWeather(url)
+    }
 
+    suspend fun getWeatherByCoordinates(lat: Double, lon: Double): WeatherResponse? {
+        val url = "$baseUrl?lat=$lat&lon=$lon&appid=$appID"
+        return fetchWeather(url)
+    }
+
+    private suspend fun fetchWeather(url: String): WeatherResponse? {
         logMessage("Request URL: $url")
 
         return try {

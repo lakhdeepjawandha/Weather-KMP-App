@@ -8,4 +8,8 @@ class WeatherRepository {
     suspend fun fetchWeather(city: String): WeatherResponse? {
         return apiService.getWeather(city)
     }
+
+    suspend fun fetchWeatherByCoordinates(lat: Double, lon: Double): WeatherResponse? {
+        return apiService.getWeatherByCoordinates(lat, lon)
+    }
 }

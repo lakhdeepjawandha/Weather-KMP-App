@@ -42,10 +42,12 @@ import weatherapp.composeapp.generated.resources.ic_wind
 import org.qreative.weatherapp.data.models.WeatherResponse
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.qreative.weatherapp.ui.home.HomeScreenViewModel
+import org.qreative.weatherapp.ui.home.HomeScreenState
+
 
 @Composable
 fun HomeScreen() {
-
     val viewModel = remember { HomeScreenViewModel() }
     var cityName by remember { mutableStateOf("") }
 
@@ -68,29 +70,38 @@ fun HomeScreen() {
                 .padding(16.dp)
         )
 
-        // Search Button
-        Button(
-            onClick = { viewModel.fetchWeather(cityName) },
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Search")
+            // Search Button
+            Button(
+                onClick = { viewModel.fetchWeather(cityName) },
+                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            ) {
+                Text("Search")
+            }
+
+            // Location Button
+            Button(
+                onClick = { viewModel.fetchWeatherByLocation() },
+                modifier = Modifier.weight(1f).padding(start = 8.dp)
+            ) {
+                Text("Use Location")
+            }
         }
 
         val state = viewModel.state.collectAsState()
-        when (state.value) {
+        when (val currentState = state.value) {
             is HomeScreenState.Loading -> {
                 CircularProgressIndicator()
                 Text(text = "Loading...")
             }
-
             is HomeScreenState.Success -> {
-                val weather = (state.value as HomeScreenState.Success).weather
-                HomeScreenContent(weather)
+                HomeScreenContent(currentState.weather)
             }
-
             is HomeScreenState.Error -> {
-                val message = (state.value as HomeScreenState.Error).message
-                Text(text = message)
+                Text(text = currentState.message)
             }
         }
     }

@@ -1,43 +1,62 @@
 package org.qreative.weatherapp
 
-import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocation
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
-import platform.CoreLocation.kCLLocationAccuracyBest
-import platform.CoreLocation.CLAuthorizationStatus
-import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
-import platform.CoreLocation.kCLAuthorizationStatusDenied
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
+import platform.CoreLocation.*
+import platform.Foundation.NSError
+import platform.darwin.NSObject
 
-import platform.CoreLocation.CLLocationCoordinate2D
-
-actual class LocationProvider : NSObject(), CLLocationManagerDelegateProtocol {
-
+@OptIn(ExperimentalForeignApi::class)
+actual class LocationProvider {
     private val locationManager = CLLocationManager()
     private var callback: ((lat: Double, lon: Double) -> Unit)? = null
+    private var locationDelegate: LocationDelegate? = null
 
     actual fun getCurrentLocation(callback: (lat: Double, lon: Double) -> Unit) {
         this.callback = callback
-        locationManager.delegate = this
-        locationManager.setDelegate(this)
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.startUpdatingLocation()
-    }
+        locationDelegate = LocationDelegate(locationManager, callback)
+        locationManager.delegate = locationDelegate
 
-    override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
-        val location = didUpdateLocations.firstOrNull() as? CLLocation
-        location?.let {
-            callback?.invoke(it.coordinate.latitude, it.coordinate.longitude)
+        val status = CLLocationManager.authorizationStatus()
+        if (status == kCLAuthorizationStatusAuthorizedWhenInUse ||
+            status == kCLAuthorizationStatusAuthorizedAlways) {
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.startUpdatingLocation()
+        } else {
+            locationManager.requestWhenInUseAuthorization()
         }
     }
 
-    override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
-        println("Failed to get location: ${didFailWithError.localizedDescription}")
-    }
+//    actual fun dispose() {
+//        locationManager.delegate = null
+//        locationDelegate = null
+//        locationManager.stopUpdatingLocation()
+//    }
 
-    // Required implementation of `NSObjectProtocol`
-    override fun `class`(): ObjCClass? {
-        return null
+    private class LocationDelegate(private val locationManager: CLLocationManager,
+        private val callback: (lat: Double, lon: Double) -> Unit
+    ) : NSObject(), CLLocationManagerDelegateProtocol {
+
+        @Suppress("UNCHECKED_CAST")
+        override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
+            val locations = didUpdateLocations as? List<CLLocation> ?: return
+            locations.firstOrNull()?.let { location ->
+
+                location.coordinate.useContents {
+                    callback?.invoke(
+                        this.latitude,
+                        this.longitude
+                    )
+                }
+                
+                locationManager.stopUpdatingLocation()
+            } ?: println("No valid location data received")
+        }
+
+        override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
+            println("Failed to get location: ${didFailWithError.localizedDescription}")
+            callback?.invoke(0.0, 0.0) // Default values or error indicator
+            manager.stopUpdatingLocation()
+        }
     }
 }
